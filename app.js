@@ -2,9 +2,9 @@ const express = require('express');
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const videoGameData = require('./Models/schema.js')
+const codeSnippet = require('./Models/schema.js')
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost:27017/videoGameLibrary');
+mongoose.connect('mongodb://localhost:27017/codeSnippetSchemaLibrary');
 
 const app = express();
 
@@ -16,6 +16,10 @@ app.use(bodyParser.urlencoded({
 app.engine('mustache', mustacheExpress());
 app.set('views', './views')
 app.set('view engine', 'mustache')
+
+app.get('/', function(req, res) {
+  res.render('index')
+})
 
 //--this block of code allows me to create a new document instance into my database, referencing my scheme--//
 // const exampleGameEntry =
@@ -58,28 +62,28 @@ app.set('view engine', 'mustache')
 
 //--THIS ALLOWS ME TO POST GAME DATA TO PAGE--//
 
-app.get('/', function(req, res) {
-  console.log('we are able to display information from database and collection');
-  videoGameData.find().then(function (doesntmatter){
-  res.render('index', {object : doesntmatter})
-})
-});
+// app.get('/', function(req, res) {
+//   console.log('we are able to display information from database and collection');
+//   videoGameData.find().then(function (doesntmatter){
+//   res.render('index', {object : doesntmatter})
+// })
+// });
 
 
 //--THIS POST ALLOWS me to render root with data that was hardcoded for initial testing--//
 
-app.post('/games', function(req, res){
-  let newUserInput = req.body.userInput;
-  const videoGameEntry = new videoGameData ({name : newUserInput});
-videoGameEntry.save()
-.then(function (results){
-  console.log(results);
-  return videoGameData.find()
-})
-.then(function (againdoesnotmatter){
-  res.render('index',{object : againdoesnotmatter})
-})
-});
+// app.post('/games', function(req, res){
+//   let newUserInput = req.body.userInput;
+//   const videoGameEntry = new videoGameData ({name : newUserInput});
+// videoGameEntry.save()
+// .then(function (results){
+//   console.log(results);
+//   return videoGameData.find()
+// })
+// .then(function (againdoesnotmatter){
+//   res.render('index',{object : againdoesnotmatter})
+// })
+// });
 
 
 //--THIS BLOCK ALLOWS ME TO TAKE INFORMATION SUBMITTED ON THE WEBPAGE WEBFORM AND AUTOMATICALLY PUSH IT TO THE DATABASE--//
@@ -134,22 +138,22 @@ videoGameEntry.save()
 
 
 //--THIS BLOCK OF CODE ALLOWS ME TO DELETE ENTIRES--//
-app.post('/delete/:name', function (req, res){
-  let gameToDelete = req.params.name;
-  videoGameData.deleteOne({ name: gameToDelete })
-  .then(function (){
-    res.redirect('/')
-  })
-});
+// app.post('/delete/:name', function (req, res){
+//   let gameToDelete = req.params.name;
+//   videoGameData.deleteOne({ name: gameToDelete })
+//   .then(function (){
+//     res.redirect('/')
+//   })
+// });
 
 app.listen(3000, function() {
   console.log('Successfully started express application!')
 })
 
-process.on('SIGINT', function() {
-  console.log("\nshutting down");
-  mongoose.connection.close(function () {
-    console.log('Mongoose default connection disconnected on app termination');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', function() {
+//   console.log("\nshutting down");
+//   mongoose.connection.close(function () {
+//     console.log('Mongoose default connection disconnected on app termination');
+//     process.exit(0);
+//   });
+// });

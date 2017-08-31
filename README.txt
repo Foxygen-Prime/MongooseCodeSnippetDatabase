@@ -17,3 +17,5 @@ allow you to see a list of all your snippets for a specific tag
 allow you to look at an individual snippet
 
 Everything else is optional.
+
+-mongo

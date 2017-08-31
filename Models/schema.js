@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CodeSnippet = new mongoose.Schema({
+const codeSnippetSchema = new mongoose.Schema({
       title: {
         type: String,
         required: true,
@@ -12,5 +12,5 @@ const CodeSnippet = new mongoose.Schema({
       tags: [String]
     })
 
-    const CodeSnippet = mongoose.model('videoGameData', videoGameLibrarySchema);
-        module.exports = videoGameData;
+    const codeSnippet = mongoose.model('codeSnippet', codeSnippetSchema);
+        module.exports = codeSnippet;
