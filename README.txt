@@ -19,3 +19,4 @@ allow you to look at an individual snippet
 Everything else is optional.
 
 -mongo
+-confirmed showing up

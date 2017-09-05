@@ -1,8 +1,14 @@
+// npm install --save nodemon
+// node_modules/.bin/nodemon -w .
+
 const express = require('express');
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const codeSnippet = require('./Models/schema.js')
+const session = require('express-session');
+// const credentials = require('./Models/credentials.js')
+
 mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://localhost:27017/codeSnippetSchemaLibrary');
 
@@ -17,9 +23,76 @@ app.engine('mustache', mustacheExpress());
 app.set('views', './views')
 app.set('view engine', 'mustache')
 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
+
+const username_password = [{
+    user: 'jimminy',
+    password: 'cricket'
+  },
+  {
+    user: 'alfred',
+    password: 'hitchcock'
+  },
+  {
+    user: 'marlon',
+    password: 'brando'
+  },
+  {
+    user: 'tupac',
+    password: 'shakur'
+  }
+]
+
+//LOGIN//
+app.use(function(req, res, next) {
+  if (req.url !== '/login' & !req.session.username) {
+    console.log("Rendering Login");
+    res.render('Login');
+  }
+});
+// app.use(function(req, res, next) {
+//   if (req.url == '/login') {
+//     next('route');
+//   } else if (!req.session.username) {
+//     res.render('Login')
+//   } else {
+//     console.log("next(route)");
+//     next('route');
+//   }
+// });
+
+
+
 app.get('/', function(req, res) {
+  console.log("rendering /");
   res.render('index')
 })
+
+app.post('/login', function(req, res) {
+  console.log("username is " + req.body.username);
+  console.log("password is " + req.body.password);
+  for (let i = 0; i < username_password.length; i++) {
+    if (req.body.username === username_password[i].user && req.body.password === username_password[i].password) {
+      req.session.username = true;
+    }
+    }
+  if (req.session.username === true) {
+    console.log("rendering /");
+    console.log("blah");
+    res.redirect('/');
+  } else {
+    console.log("rendering login");
+    res.render('Login', {
+      error: true});
+}
+})
+
+//LOGIN END//
 
 //--this block of code allows me to create a new document instance into my database, referencing my scheme--//
 // const exampleGameEntry =
@@ -33,32 +106,7 @@ app.get('/', function(req, res) {
 //   if (err) return console.log(err);
 // }
 
-//--this was a test hard coded array--//
-// let hardCodedArray = [{
-//     'name': 'Mario Party',
-//     'general': {
-//       'platform': ['pc', 'xbox', 'ps4'],
-//       'genre': ['minigames', 'party', 'shooter', 'puzzle', 'strategy'],
-//       'numberOfPlayers': '1 - 8',
-//     }
-//   },
-//   {
-    // 'name': 'Legend of Zelda',
-    // 'general': {
-    //   'platform': ['nintendo', 'ds'],
-    //   'genre': ['minigames', 'party', 'shooter', 'puzzle', 'strategy'],
-    //   'numberOfPlayers': '1 - 8',
-//     }
-//   },
-//   {
-//     'name': 'Gears of War',
-//     'general': {
-//       'platform': ['xbox', 'ps4', 'pc'],
-//       'genre': ['shooter'],
-//       'numberOfPlayers': '1 - 8',
-//     }
-//   }
-// ]
+// --this was a test hard coded array--//
 
 //--THIS ALLOWS ME TO POST GAME DATA TO PAGE--//
 
