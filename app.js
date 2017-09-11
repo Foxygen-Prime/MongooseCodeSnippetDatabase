@@ -5,6 +5,7 @@ const express = require('express');
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const creds = require('./Models/credentials.js')
 const codeSnippet = require('./Models/schema.js')
 const session = require('express-session');
 // const credentials = require('./Models/credentials.js')
@@ -29,60 +30,52 @@ app.use(session({
   saveUninitialized: true
 }))
 
-
-const username_password = [{
-    user: 'jimminy',
-    password: 'cricket'
-  },
-  {
-    user: 'alfred',
-    password: 'hitchcock'
-  },
-  {
-    user: 'marlon',
-    password: 'brando'
-  },
-  {
-    user: 'tupac',
-    password: 'shakur'
-  }
-]
+//
+// const username_password = [{
+//     user: 'jimminy',
+//     password: 'cricket'
+//   },
+//   {
+//     user: 'alfred',
+//     password: 'hitchcock'
+//   },
+//   {
+//     user: 'marlon',
+//     password: 'brando'
+//   },
+//   {
+//     user: 'tupac',
+//     password: 'shakur'
+//   }
+// ]
 
 //LOGIN//
 app.use(function(req, res, next) {
-  if (req.url !== '/login' & !req.session.username) {
-    console.log("Rendering Login");
-    res.render('Login');
+  if (req.url == '/Login') {
+    next('route');
+  } else if (!req.session.username) {
+    res.render('index')
+  } else {
+    console.log("next(route)");
+    next('route');
   }
 });
-// app.use(function(req, res, next) {
-//   if (req.url == '/login') {
-//     next('route');
-//   } else if (!req.session.username) {
-//     res.render('Login')
-//   } else {
-//     console.log("next(route)");
-//     next('route');
-//   }
-// });
-
-
 
 app.get('/', function(req, res) {
   console.log("rendering /");
   res.render('index')
 })
 
-app.post('/login', function(req, res) {
+app.post('/Login', function(req, res) {
   console.log("username is " + req.body.username);
   console.log("password is " + req.body.password);
-  for (let i = 0; i < username_password.length; i++) {
-    if (req.body.username === username_password[i].user && req.body.password === username_password[i].password) {
+  for (let i = 0; i < creds.length; i++) {
+    if (req.body.username === creds[i].user && req.body.password === creds[i].password) {
       req.session.username = true;
     }
     }
   if (req.session.username === true) {
-    console.log("rendering /");
+    console.log("index rendered");
     console.log("blah");
     res.redirect('/');
   } else {
@@ -91,6 +84,18 @@ app.post('/login', function(req, res) {
       error: true});
 }
 })
+
+//Delete//
+
+app.post('/delete/:id', function(req, res) {
+  codeSnippet.deleteOne({
+      _id: new ObjectId(req.params.id)
+    })
+    .then(function(results) {
+      console.log(snippet successfully deleted);
+      res.redirect('index');
+    });
+});
 
 //LOGIN END//
 

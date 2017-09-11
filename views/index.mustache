@@ -9,11 +9,29 @@
     <h1>Save Your Snippets Here!</h1>
     <h2>Login</h2>
     <form class="" action="/Login" method="post">
-      <input type="text" name="" value="Email">
-      <input type="text" name="" value="Password">
-      <input type="Submit" name="" value="Sign In">
-
+      <input type="text" name="" value="Snippet">
+      <input type="text" name="" value="Tags">
+      <input type="Submit" name="" value="Submit">
     </form>
+    <h3>{{#title}}{{title}}{{/title}}{{^title}}Code Collection{{/title}}</h3>
+  {{#results}}
+    <div class=>
+      <p>{{title}}<br>{{language}}</p>
+      <div class=>
+        {{body}}
+      </div>
+      <p>{{notes}}</p>
+      <p><span class=>Tags</span>{{tags}}</p>
+      {{#canEdit}}
+        <form action="/update/{{_id}}" method="get">
+          <input type="submit" value="Edit Snippet">
+        </form>
+        <form action="/delete/{{_id}}" method="post">
+          <input type="submit" value="Delete this">
+        </form>
+      {{/canEdit}}
+    </div>
+  {{/results}}
 
   </body>
 </html>
